@@ -12,8 +12,8 @@ describe('Controls', () => {
     for (const meta of PARAM_META) {
       expect(screen.getByLabelText(meta.label)).toBeInTheDocument();
     }
-    expect(screen.getByText('0.60')).toBeInTheDocument();
-    expect(screen.getByText('0')).toBeInTheDocument();
+    expect(screen.getByText('1.50')).toBeInTheDocument();
+    expect(screen.getByText('32')).toBeInTheDocument();
   });
 
   it('emits clamped parameters when a slider moves', () => {
@@ -34,11 +34,11 @@ describe('Controls', () => {
     const onChange = vi.fn();
     render(<Controls params={DEFAULT_PARAMS} onChange={onChange} />);
 
-    fireEvent.change(screen.getByLabelText('Detail'), {
+    fireEvent.change(screen.getByLabelText('Blur'), {
       target: { value: '0.9' },
     });
 
-    expect(onChange).toHaveBeenCalledWith({ ...DEFAULT_PARAMS, detail: 0.9 });
+    expect(onChange).toHaveBeenCalledWith({ ...DEFAULT_PARAMS, blur: 0.9 });
   });
 
   it('resets to the default parameters', () => {

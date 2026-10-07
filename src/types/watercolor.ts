@@ -1,20 +1,16 @@
 /**
- * Watercolor effect parameters. Values are normalized by
- * `clampParams` before rendering so consumers may hold loose values.
+ * Renderer parameters. Values are normalized by `clampParams` before
+ * rendering so consumers may hold loose values.
  */
 export interface WatercolorParams {
-  /** Edge-preserving smoothing strength. 0 disables, 1 is strongest. */
-  detail: number;
-  /** Dark pigment pooling along edges. 0 disables, 1 is strongest. */
-  edge: number;
-  /** Wet-on-wet color bleed. 0 disables, 1 is strongest. */
-  wash: number;
-  /** Paper grain and granulation. 0 disables, 1 is strongest. */
-  paperTexture: number;
+  /** Gaussian sigma in image pixels. 0 disables the blur. */
+  blur: number;
   /** Saturation multiplier where 1 is neutral and 0 is grayscale. */
   saturation: number;
-  /** Posterize levels. Values below 2 disable quantization. */
-  posterizeLevels: number;
+  /** Quantization step; values below 2 disable banding. */
+  quantizeStep: number;
+  /** Translucent paper speckle. 0 disables, 1 is strongest. */
+  paperTexture: number;
 }
 
 /** Identifier for a bundled parameter preset. */

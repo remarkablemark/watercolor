@@ -6,9 +6,6 @@ export interface Size {
   height: number;
 }
 
-/** Longest side of the structure (smoothing) pass. */
-export const STRUCTURE_MAX_DIM = 1200;
-
 /** Longest side used for interactive renders while a control is dragged. */
 export const WORKING_MAX_DIM = 800;
 

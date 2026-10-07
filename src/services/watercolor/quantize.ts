@@ -1,25 +1,24 @@
 import type { WatercolorParams } from 'src/types/watercolor';
 
 /**
- * Quantizes color channels into `levels` evenly spaced steps. Values
- * below 2 disable quantization and pass pixels through unchanged.
+ * Quantizes color channels into flat bands: every channel snaps to a
+ * multiple of `quantizeStep`, so the default of 32 matches the studio
+ * reference (`Math.round(value / 32) * 32`). Values below 2 disable
+ * quantization and pass pixels through unchanged.
  */
-export function applyPosterize(
+export function applyQuantize(
   source: ImageData,
   target: ImageData,
   params: WatercolorParams,
 ): void {
-  const levels = Math.round(params.posterizeLevels);
-  if (levels < 2) {
+  const step = Math.round(params.quantizeStep);
+  if (step < 2) {
     target.data.set(source.data);
     return;
   }
   const lookup = new Uint8ClampedArray(256);
-  const steps = levels - 1;
   for (let value = 0; value < 256; value++) {
-    lookup[value] = Math.round(
-      (Math.round((value / 255) * steps) / steps) * 255,
-    );
+    lookup[value] = Math.round(value / step) * step;
   }
   const src = source.data;
   const dst = target.data;

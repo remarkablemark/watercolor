@@ -2,7 +2,7 @@ import { DEFAULT_PARAMS } from './params';
 import { getPreset, matchPreset, PRESETS } from './presets';
 
 describe('PRESETS', () => {
-  it('covers painterly and graphic looks', () => {
+  it('offers a loose, graphic, and monochrome look', () => {
     expect(PRESETS.map(({ id }) => id)).toEqual([
       'loose',
       'wet',
@@ -13,18 +13,14 @@ describe('PRESETS', () => {
 
   it('keeps every preset parameter in range', () => {
     for (const { params, label } of PRESETS) {
-      expect(params.detail).toBeGreaterThanOrEqual(0);
-      expect(params.detail).toBeLessThanOrEqual(1);
-      expect(params.edge).toBeGreaterThanOrEqual(0);
-      expect(params.edge).toBeLessThanOrEqual(1);
-      expect(params.wash).toBeGreaterThanOrEqual(0);
-      expect(params.wash).toBeLessThanOrEqual(1);
+      expect(params.blur).toBeGreaterThanOrEqual(0);
+      expect(params.blur).toBeLessThanOrEqual(4);
       expect(params.paperTexture).toBeGreaterThanOrEqual(0);
       expect(params.paperTexture).toBeLessThanOrEqual(1);
       expect(params.saturation).toBeGreaterThanOrEqual(0);
       expect(params.saturation).toBeLessThanOrEqual(2);
-      expect(params.posterizeLevels).toBeGreaterThanOrEqual(0);
-      expect(params.posterizeLevels).toBeLessThanOrEqual(8);
+      expect(params.quantizeStep).toBeGreaterThanOrEqual(0);
+      expect(params.quantizeStep).toBeLessThanOrEqual(64);
       expect(label.length).toBeGreaterThan(0);
     }
   });
@@ -47,7 +43,7 @@ describe('matchPreset', () => {
   });
 
   it('returns null for customized parameters', () => {
-    expect(matchPreset({ ...PRESETS[0].params, detail: 0.11 })).toBeNull();
+    expect(matchPreset({ ...PRESETS[0].params, blur: 0.11 })).toBeNull();
   });
 
   it('matches the default parameters to the loose preset', () => {

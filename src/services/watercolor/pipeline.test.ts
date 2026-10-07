@@ -37,7 +37,7 @@ describe('renderWatercolor', () => {
     expect(result.data).toHaveLength(32 * 32 * 4);
   });
 
-  it('scales down images larger than the structure size', () => {
+  it('keeps source dimensions for wide images', () => {
     const result = renderWatercolor(wide(1300, 20), DEFAULT_PARAMS);
     expect(result.width).toBe(1300);
     expect(result.height).toBe(20);
@@ -61,24 +61,42 @@ describe('renderWatercolor', () => {
   it('changes output when parameters change', () => {
     const source = checker(16);
     const smooth = renderWatercolor(source, DEFAULT_PARAMS);
-    const grainy = renderWatercolor(source, {
+    const graphic = renderWatercolor(source, {
       ...DEFAULT_PARAMS,
-      detail: 0,
+      blur: 0,
       paperTexture: 1,
       saturation: 0,
     } satisfies WatercolorParams);
-    expect(Array.from(smooth.data)).not.toEqual(Array.from(grainy.data));
+    expect(Array.from(smooth.data)).not.toEqual(Array.from(graphic.data));
+  });
+
+  it('flattens a uniform source to a single band', () => {
+    const source = new ImageData(24, 24);
+    for (let i = 0; i < source.data.length; i += 4) {
+      source.data[i] = 128;
+      source.data[i + 1] = 128;
+      source.data[i + 2] = 128;
+      source.data[i + 3] = 255;
+    }
+    const result = renderWatercolor(source, {
+      ...DEFAULT_PARAMS,
+      paperTexture: 0,
+    });
+    const reds = new Set<number>();
+    for (let i = 0; i < result.data.length; i += 4) {
+      reds.add(result.data[i]);
+    }
+    expect(reds).toEqual(new Set([128]));
   });
 
   it('renders transparent sources onto the paper color', () => {
     const transparent = new ImageData(8, 8);
     const result = renderWatercolor(transparent, {
       ...DEFAULT_PARAMS,
-      detail: 0,
-      wash: 0,
+      blur: 0,
       paperTexture: 0,
-      edge: 0,
       saturation: 1,
+      quantizeStep: 0,
     });
     expect(result.data[0]).toBeGreaterThanOrEqual(240);
     expect(result.data[3]).toBe(255);
@@ -87,12 +105,10 @@ describe('renderWatercolor', () => {
   it('clamps out-of-range parameters', () => {
     const source = checker(8);
     const result = renderWatercolor(source, {
-      detail: 5,
-      edge: -1,
-      wash: Number.NaN,
-      paperTexture: 0,
-      saturation: 99,
-      posterizeLevels: 3,
+      blur: 9,
+      saturation: Number.NaN,
+      quantizeStep: 3.7,
+      paperTexture: -2,
     });
     expect(result.width).toBe(8);
     for (const value of result.data) {

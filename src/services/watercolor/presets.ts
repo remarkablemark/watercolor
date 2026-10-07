@@ -8,58 +8,50 @@ export interface Preset {
   params: WatercolorParams;
 }
 
-/** Built-in looks covering the painterly and graphic ends of the range. */
+/** Built-in looks spanning soft, graphic, and monochrome treatments. */
 export const PRESETS: readonly Preset[] = [
   {
     id: 'loose',
     label: 'Loose',
-    description: 'Balanced painterly washes with soft detail.',
+    description: 'Soft focus with flat, banded color and light texture.',
     params: {
-      detail: 0.6,
-      edge: 0.18,
-      wash: 0.5,
-      paperTexture: 0.45,
-      saturation: 1.15,
-      posterizeLevels: 0,
+      blur: 1.5,
+      saturation: 1.25,
+      quantizeStep: 32,
+      paperTexture: 0.25,
     },
   },
   {
     id: 'wet',
     label: 'Wet-on-wet',
-    description: 'Heavy bleed and soft pigment edges.',
+    description: 'Extra-soft focus with rich color and heavier texture.',
     params: {
-      detail: 0.75,
-      edge: 0.05,
-      wash: 0.9,
-      paperTexture: 0.6,
-      saturation: 1.3,
-      posterizeLevels: 0,
+      blur: 3,
+      saturation: 1.4,
+      quantizeStep: 48,
+      paperTexture: 0.4,
     },
   },
   {
     id: 'sketch',
     label: 'Sketch',
-    description: 'Dark ink edges over pale, desaturated washes.',
+    description: 'Near-monochrome with fine tonal bands and visible tooth.',
     params: {
-      detail: 0.3,
-      edge: 0.85,
-      wash: 0.08,
-      paperTexture: 0.7,
-      saturation: 0.12,
-      posterizeLevels: 0,
+      blur: 1,
+      saturation: 0.15,
+      quantizeStep: 16,
+      paperTexture: 0.45,
     },
   },
   {
     id: 'posterized',
     label: 'Posterized',
-    description: 'Flat graphic shapes with banded color.',
+    description: 'Bold flat shapes with coarse color banding.',
     params: {
-      detail: 0.4,
-      edge: 0.4,
-      wash: 0.25,
-      paperTexture: 0.35,
-      saturation: 1.25,
-      posterizeLevels: 5,
+      blur: 2,
+      saturation: 1.3,
+      quantizeStep: 64,
+      paperTexture: 0.2,
     },
   },
 ];

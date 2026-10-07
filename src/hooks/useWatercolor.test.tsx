@@ -116,7 +116,7 @@ describe('useWatercolor', () => {
     await settle();
     expect(context.putImageData).toHaveBeenCalledTimes(2);
 
-    rerender({ image, params: { ...DEFAULT_PARAMS, wash: 0.2 } });
+    rerender({ image, params: { ...DEFAULT_PARAMS, blur: 0.2 } });
 
     expect(result.current.status).toBe('rendering');
     await settle();

@@ -140,12 +140,12 @@ describe('App', () => {
     await settle();
     await user.click(screen.getByRole('button', { name: 'Sketch' }));
 
-    const customDetail =
-      ['0.5', '0.51', '0.52'].find((value) =>
-        PRESETS.every((preset) => String(preset.params.detail) !== value),
+    const customBlur =
+      ['0', '0.5', '0.9'].find((value) =>
+        PRESETS.every((preset) => String(preset.params.blur) !== value),
       ) ?? '0.5';
-    fireEvent.change(screen.getByLabelText('Detail'), {
-      target: { value: customDetail },
+    fireEvent.change(screen.getByLabelText('Blur'), {
+      target: { value: customBlur },
     });
 
     expect(screen.getByRole('button', { name: 'Sketch' })).toHaveAttribute(

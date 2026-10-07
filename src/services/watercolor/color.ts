@@ -29,3 +29,23 @@ export function applySaturation(
     dst[i + 3] = src[i + 3];
   }
 }
+
+/**
+ * The single-color version of {@link applySaturation}'s math, for the
+ * texture specks. CSS `saturate()` uses the same Rec. 709 luminance
+ * gain, so this also reproduces the reference snippet's filter on the
+ * speck fill colors.
+ */
+export function saturateColor(
+  r: number,
+  g: number,
+  b: number,
+  amount: number,
+): [number, number, number] {
+  const gray = luminance(r, g, b);
+  return [
+    gray + (r - gray) * amount,
+    gray + (g - gray) * amount,
+    gray + (b - gray) * amount,
+  ];
+}

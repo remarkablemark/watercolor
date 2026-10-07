@@ -1,15 +1,13 @@
 import type { WatercolorParams } from 'src/types/watercolor';
 
-import { applySaturation } from './color';
+import { applySaturation, saturateColor } from './color';
 import { luminance } from './paint';
 
 const base: WatercolorParams = {
-  detail: 0,
-  edge: 0,
-  wash: 0,
-  paperTexture: 0,
+  blur: 0,
   saturation: 1,
-  posterizeLevels: 0,
+  quantizeStep: 0,
+  paperTexture: 0,
 };
 
 function pixel(r: number, g: number, b: number): ImageData {
@@ -17,6 +15,28 @@ function pixel(r: number, g: number, b: number): ImageData {
   image.data.set([r, g, b, 255]);
   return image;
 }
+
+describe('saturateColor', () => {
+  it('leaves white and neutral grays untouched', () => {
+    const [r, g, b] = saturateColor(255, 255, 255, 1.25);
+    expect(r).toBeCloseTo(255);
+    expect(g).toBeCloseTo(255);
+    expect(b).toBeCloseTo(255);
+    const [gr, gg, gb] = saturateColor(90, 90, 90, 2);
+    expect(gr).toBeCloseTo(90);
+    expect(gg).toBeCloseTo(90);
+    expect(gb).toBeCloseTo(90);
+  });
+
+  it('matches applySaturation on the same pixel', () => {
+    const target = new ImageData(1, 1);
+    applySaturation(pixel(137, 90, 60), target, { ...base, saturation: 1.25 });
+    const [r, g, b] = saturateColor(137, 90, 60, 1.25);
+    expect(Math.abs(target.data[0] - r)).toBeLessThanOrEqual(0.5);
+    expect(Math.abs(target.data[1] - g)).toBeLessThanOrEqual(0.5);
+    expect(Math.abs(target.data[2] - b)).toBeLessThanOrEqual(0.5);
+  });
+});
 
 describe('applySaturation', () => {
   it('passes colors through at amount 1', () => {

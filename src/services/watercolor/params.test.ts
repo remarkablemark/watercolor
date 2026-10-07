@@ -8,35 +8,29 @@ describe('clampParams', () => {
   it('clamps out-of-range values', () => {
     expect(
       clampParams({
-        detail: -1,
-        edge: 2,
-        wash: Number.NaN,
-        paperTexture: 0.5,
+        blur: -1,
         saturation: 9,
-        posterizeLevels: 100,
+        quantizeStep: 100,
+        paperTexture: 0.5,
       }),
     ).toEqual({
-      detail: 0,
-      edge: 1,
-      wash: 0,
-      paperTexture: 0.5,
+      blur: 0,
       saturation: 2,
-      posterizeLevels: 8,
+      quantizeStep: 64,
+      paperTexture: 0.5,
     });
   });
 
   it('replaces non-finite values with the minimum', () => {
-    expect(
-      clampParams({ ...DEFAULT_PARAMS, saturation: Number.NaN }).saturation,
-    ).toBe(0);
+    expect(clampParams({ ...DEFAULT_PARAMS, blur: Number.NaN }).blur).toBe(0);
   });
 
-  it('rounds posterize levels to whole numbers', () => {
+  it('rounds quantize steps to whole numbers', () => {
     expect(
-      clampParams({ ...DEFAULT_PARAMS, posterizeLevels: 4.6 }).posterizeLevels,
+      clampParams({ ...DEFAULT_PARAMS, quantizeStep: 4.6 }).quantizeStep,
     ).toBe(5);
     expect(
-      clampParams({ ...DEFAULT_PARAMS, posterizeLevels: -3 }).posterizeLevels,
+      clampParams({ ...DEFAULT_PARAMS, quantizeStep: -3 }).quantizeStep,
     ).toBe(0);
   });
 });

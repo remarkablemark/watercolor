@@ -2,7 +2,6 @@ import {
   fitSize,
   fullPassMaxDim,
   MAX_INPUT_PIXELS,
-  STRUCTURE_MAX_DIM,
   WORKING_MAX_DIM,
 } from './geometry';
 
@@ -42,7 +41,8 @@ describe('fullPassMaxDim', () => {
 });
 
 describe('constants', () => {
-  it('keeps the working size smaller than the structure size', () => {
-    expect(WORKING_MAX_DIM).toBeLessThan(STRUCTURE_MAX_DIM);
+  it('exposes a bounded working size', () => {
+    expect(WORKING_MAX_DIM).toBeGreaterThan(0);
+    expect(WORKING_MAX_DIM).toBeLessThan(MAX_INPUT_PIXELS);
   });
 });
