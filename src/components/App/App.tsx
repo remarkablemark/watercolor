@@ -46,8 +46,8 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100">
-      <header className="border-b border-stone-200 bg-white/70 px-4 py-3 sm:px-6 dark:border-stone-800 dark:bg-stone-900/70">
-        <div className="mx-auto flex max-w-6xl items-baseline justify-between gap-4">
+      <header className="border-b border-stone-200 bg-white/70 py-3 dark:border-stone-800 dark:bg-stone-900/70">
+        <div className="mx-auto flex max-w-6xl items-baseline justify-between gap-4 px-4 sm:px-6">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">
               Watercolor
