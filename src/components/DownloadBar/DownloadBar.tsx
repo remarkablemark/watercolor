@@ -61,7 +61,7 @@ export function DownloadBar({
       <div className="min-w-32 flex-1">
         <label
           htmlFor={selectId}
-          className="block text-xs font-semibold tracking-wide text-stone-500 uppercase dark:text-stone-400"
+          className="block text-sm font-semibold tracking-wide text-stone-500 uppercase dark:text-stone-400"
         >
           Format
         </label>
@@ -71,7 +71,7 @@ export function DownloadBar({
           onChange={(event) => {
             setFormat(event.target.value as DownloadFormat);
           }}
-          className="mt-1 w-full rounded-md border border-stone-300 bg-white px-2 py-1.5 text-sm dark:border-stone-700 dark:bg-stone-900"
+          className="mt-1 w-full rounded-md border border-stone-300 bg-white px-2 py-1.5 text-base dark:border-stone-700 dark:bg-stone-900"
         >
           {formats.map((item) => (
             <option key={item} value={item}>
@@ -86,12 +86,12 @@ export function DownloadBar({
           void handleDownload();
         }}
         disabled={disabled || busy}
-        className="rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:pointer-events-none disabled:opacity-50"
+        className="rounded-md bg-sky-600 px-4 py-2 text-base font-medium text-white hover:bg-sky-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:pointer-events-none disabled:opacity-50"
       >
         {busy ? 'Preparing…' : 'Download'}
       </button>
       {error && (
-        <p role="alert" className="w-full text-sm text-red-600">
+        <p role="alert" className="w-full text-base text-red-600">
           {error}
         </p>
       )}

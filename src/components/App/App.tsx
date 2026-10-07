@@ -49,11 +49,11 @@ export function App() {
       <header className="border-b border-stone-200 bg-white/70 px-4 py-3 sm:px-6 dark:border-stone-800 dark:bg-stone-900/70">
         <div className="mx-auto flex max-w-6xl items-baseline justify-between gap-4">
           <div>
-            <h1 className="text-lg font-semibold tracking-tight">
-              Watercolor Studio
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Watercolor
             </h1>
-            <p className="text-sm text-stone-500 dark:text-stone-400">
-              Turn any photo into a painting — nothing leaves your browser.
+            <p className="text-base text-stone-500 dark:text-stone-400">
+              Turn any image into watercolor art.
             </p>
           </div>
         </div>
@@ -63,7 +63,7 @@ export function App() {
         {imageError && (
           <p
             role="alert"
-            className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+            className="mb-4 rounded-md bg-red-50 px-3 py-2 text-base text-red-700 dark:bg-red-950 dark:text-red-300"
           >
             {imageError}
           </p>
@@ -82,13 +82,13 @@ export function App() {
                 alt={`Original ${image.name}`}
               />
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm text-stone-500 dark:text-stone-400">
+                <p className="text-base text-stone-500 dark:text-stone-400">
                   {statusText}
                 </p>
                 <Dropzone variant="button" onFile={loadFile} />
               </div>
               {oversized && (
-                <p className="text-xs text-amber-700 dark:text-amber-400">
+                <p className="text-sm text-amber-700 dark:text-amber-400">
                   Large image — the full render is capped at 24 megapixels.
                 </p>
               )}
@@ -108,7 +108,7 @@ export function App() {
                 <button
                   type="button"
                   onClick={clear}
-                  className="text-xs text-stone-500 underline-offset-2 hover:underline dark:text-stone-400"
+                  className="text-sm text-stone-500 underline-offset-2 hover:underline dark:text-stone-400"
                 >
                   Remove image
                 </button>

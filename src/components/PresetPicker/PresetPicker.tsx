@@ -10,7 +10,7 @@ interface PresetPickerProps {
 export function PresetPicker({ activeId, onSelect }: PresetPickerProps) {
   return (
     <section aria-label="Presets" className="space-y-2">
-      <h2 className="text-xs font-semibold tracking-wide text-stone-500 uppercase dark:text-stone-400">
+      <h2 className="text-sm font-semibold tracking-wide text-stone-500 uppercase dark:text-stone-400">
         Presets
       </h2>
       <div className="grid grid-cols-2 gap-2">
@@ -27,8 +27,8 @@ export function PresetPicker({ activeId, onSelect }: PresetPickerProps) {
               }}
               className={
                 active
-                  ? 'rounded-md bg-sky-600 px-3 py-2 text-sm font-medium text-white'
-                  : 'rounded-md border border-stone-300 px-3 py-2 text-sm font-medium hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800'
+                  ? 'rounded-md bg-sky-600 px-3 py-2 text-base font-medium text-white'
+                  : 'rounded-md border border-stone-300 px-3 py-2 text-base font-medium hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800'
               }
             >
               {preset.label}

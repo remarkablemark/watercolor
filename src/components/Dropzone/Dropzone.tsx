@@ -70,9 +70,8 @@ export function Dropzone({
       onDrop={handleDrop}
     >
       {hero && (
-        <p className="max-w-sm text-sm text-stone-500 dark:text-stone-400">
-          Drop an image here, paste from the clipboard, or browse. Nothing
-          leaves your browser.
+        <p className="max-w-sm text-base text-stone-500 dark:text-stone-400">
+          Drop an image, paste from the clipboard, or browse.
         </p>
       )}
       <input
@@ -85,7 +84,7 @@ export function Dropzone({
       />
       <label
         htmlFor={inputId}
-        className="cursor-pointer rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white shadow-xs peer-focus-visible:ring-2 peer-focus-visible:ring-sky-500 hover:bg-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white"
+        className="cursor-pointer rounded-md bg-stone-900 px-4 py-2 text-base font-medium text-white shadow-xs peer-focus-visible:ring-2 peer-focus-visible:ring-sky-500 hover:bg-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white"
       >
         {loading ? 'Loading…' : hero ? 'Browse files' : 'Choose another image'}
       </label>

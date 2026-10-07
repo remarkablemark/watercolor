@@ -77,9 +77,11 @@ describe('App', () => {
     render(<App />);
 
     expect(
-      screen.getByRole('heading', { level: 1, name: 'Watercolor Studio' }),
+      screen.getByRole('heading', { level: 1, name: 'Watercolor' }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Drop an image here/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Drop an image, paste from the clipboard/i),
+    ).toBeInTheDocument();
   });
 
   it('uploads an image into the editor', async () => {
@@ -104,7 +106,7 @@ describe('App', () => {
   it('shows an error for unsupported dropped files', () => {
     render(<App />);
     const zone = screen
-      .getByText(/Drop an image here/i)
+      .getByText(/Drop an image, paste from the clipboard/i)
       .closest('div') as HTMLElement;
     const pdf = new File(['x'], 'notes.pdf', { type: 'application/pdf' });
 
@@ -113,7 +115,9 @@ describe('App', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(
       'Unsupported file type: application/pdf',
     );
-    expect(screen.getByText(/Drop an image here/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Drop an image, paste from the clipboard/i),
+    ).toBeInTheDocument();
   });
 
   it('applies a preset to the controls', async () => {
@@ -224,7 +228,9 @@ describe('App', () => {
 
     await user.click(screen.getByRole('button', { name: 'Remove image' }));
 
-    expect(screen.getByText(/Drop an image here/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Drop an image, paste from the clipboard/i),
+    ).toBeInTheDocument();
     expect(
       screen.queryByRole('img', { name: 'Original beach.png' }),
     ).not.toBeInTheDocument();

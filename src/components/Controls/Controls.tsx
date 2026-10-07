@@ -21,7 +21,7 @@ export function Controls({ params, onChange }: ControlsProps) {
 
   return (
     <section aria-label="Effect controls" className="space-y-4">
-      <h2 className="text-xs font-semibold tracking-wide text-stone-500 uppercase dark:text-stone-400">
+      <h2 className="text-sm font-semibold tracking-wide text-stone-500 uppercase dark:text-stone-400">
         Adjust
       </h2>
       {PARAM_META.map((meta) => {
@@ -29,12 +29,12 @@ export function Controls({ params, onChange }: ControlsProps) {
         return (
           <div key={meta.key}>
             <div className="flex items-baseline justify-between gap-2">
-              <label htmlFor={inputId} className="text-sm font-medium">
+              <label htmlFor={inputId} className="text-base font-medium">
                 {meta.label}
               </label>
               <output
                 htmlFor={inputId}
-                className="text-xs text-stone-500 tabular-nums dark:text-stone-400"
+                className="text-sm text-stone-500 tabular-nums dark:text-stone-400"
               >
                 {formatValue(params[meta.key], meta.step)}
               </output>
@@ -64,7 +64,7 @@ export function Controls({ params, onChange }: ControlsProps) {
         onClick={() => {
           onChange(DEFAULT_PARAMS);
         }}
-        className="rounded-md border border-stone-300 px-3 py-1.5 text-sm font-medium hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:border-stone-700 dark:hover:bg-stone-800"
+        className="rounded-md border border-stone-300 px-3 py-1.5 text-base font-medium hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:border-stone-700 dark:hover:bg-stone-800"
       >
         Reset
       </button>

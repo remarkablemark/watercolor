@@ -11,7 +11,9 @@ describe('Dropzone', () => {
   it('shows the hero prompt with a hidden file input', () => {
     render(<Dropzone onFile={vi.fn()} />);
 
-    expect(screen.getByText(/Drop an image here/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Drop an image, paste from the clipboard/i),
+    ).toBeInTheDocument();
     const input = screen.getByLabelText('Browse files');
     expect(input).toHaveAttribute('type', 'file');
     expect(input).toHaveAttribute('accept', 'image/*');
@@ -31,7 +33,7 @@ describe('Dropzone', () => {
   it('emits dropped files and clears the drag state', () => {
     const onFile = vi.fn();
     render(<Dropzone onFile={onFile} />);
-    const zone = zoneFromText(/Drop an image here/i);
+    const zone = zoneFromText(/Drop an image, paste from the clipboard/i);
     const file = new File(['x'], 'beach.jpg', { type: 'image/jpeg' });
 
     fireEvent.dragOver(zone);
@@ -45,7 +47,7 @@ describe('Dropzone', () => {
   it('ignores drops without files', () => {
     const onFile = vi.fn();
     render(<Dropzone onFile={onFile} />);
-    const zone = zoneFromText(/Drop an image here/i);
+    const zone = zoneFromText(/Drop an image, paste from the clipboard/i);
 
     fireEvent.drop(zone, { dataTransfer: { files: [] } });
 
@@ -54,7 +56,7 @@ describe('Dropzone', () => {
 
   it('clears the drag highlight when the pointer leaves', () => {
     render(<Dropzone onFile={vi.fn()} />);
-    const zone = zoneFromText(/Drop an image here/i);
+    const zone = zoneFromText(/Drop an image, paste from the clipboard/i);
 
     fireEvent.dragOver(zone);
     fireEvent.dragLeave(zone);
@@ -65,7 +67,7 @@ describe('Dropzone', () => {
   it('ignores drops while disabled', () => {
     const onFile = vi.fn();
     render(<Dropzone onFile={onFile} disabled />);
-    const zone = zoneFromText(/Drop an image here/i);
+    const zone = zoneFromText(/Drop an image, paste from the clipboard/i);
 
     expect(screen.getByLabelText('Browse files')).toBeDisabled();
     fireEvent.drop(zone, {
@@ -88,6 +90,8 @@ describe('Dropzone', () => {
     render(<Dropzone onFile={vi.fn()} variant="button" />);
 
     expect(screen.getByText('Choose another image')).toBeInTheDocument();
-    expect(screen.queryByText(/Drop an image here/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Drop an image, paste from the clipboard/i),
+    ).not.toBeInTheDocument();
   });
 });

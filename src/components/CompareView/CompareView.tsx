@@ -71,10 +71,10 @@ export function CompareView({
         className="absolute inset-0 h-full w-full"
         style={{ clipPath: `inset(0 ${String(100 - divider)}% 0 0)` }}
       />
-      <span className="pointer-events-none absolute top-2 left-2 rounded bg-black/50 px-1.5 py-0.5 text-xs text-white">
+      <span className="pointer-events-none absolute top-2 left-2 rounded bg-black/50 px-1.5 py-0.5 text-sm text-white">
         Original
       </span>
-      <span className="pointer-events-none absolute top-2 right-2 rounded bg-black/50 px-1.5 py-0.5 text-xs text-white">
+      <span className="pointer-events-none absolute top-2 right-2 rounded bg-black/50 px-1.5 py-0.5 text-sm text-white">
         Watercolor
       </span>
       <div
