@@ -4,7 +4,11 @@
 [![test](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/test.yml/badge.svg)](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/remarkablemark/watercolor/graph/badge.svg?token=Fnhl2pBxpd)](https://codecov.io/gh/remarkablemark/watercolor)
 
-⚡ Vite React Tailwind Template
+🎨 Turn your images into watercolor art.
+
+Upload an image, adjust the paint and paper effects, and download your watercolor creation:
+
+- [Watercolor](https://remarkablemark.org/watercolor/)
 
 ## Install
 
