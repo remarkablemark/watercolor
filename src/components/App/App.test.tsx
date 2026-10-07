@@ -1,32 +1,238 @@
-import { render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event';
 import userEvent from '@testing-library/user-event';
+import { IDLE_DELAY_MS } from 'src/hooks/useWatercolor';
+import { imageToImageData } from 'src/services/canvas';
+import { downloadBlob, encodeImage } from 'src/services/download';
+import { loadImage } from 'src/services/image';
+import { PARAM_META } from 'src/services/watercolor/params';
+import { getPreset, PRESETS } from 'src/services/watercolor/presets';
 
 import { App } from '.';
 
-describe('App component', () => {
-  it('renders without crashing', () => {
-    render(<App />);
+vi.mock('src/services/image', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('src/services/image')>();
+  return { ...actual, loadImage: vi.fn() };
+});
 
-    const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toBeInTheDocument();
+vi.mock('src/services/download', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('src/services/download')>();
+  return { ...actual, encodeImage: vi.fn(), downloadBlob: vi.fn() };
+});
 
-    const button = screen.getByRole('button', { name: /count is 0/i });
-    expect(button).toBeInTheDocument();
+vi.mock('src/services/canvas', () => ({
+  imageToImageData: vi.fn(() => new ImageData(8, 6)),
+}));
 
-    const images = screen.getAllByRole('img');
-    expect(images).toHaveLength(3);
+function fakeImage(width = 8, height = 6): HTMLImageElement {
+  const element = document.createElement('img');
+  Object.defineProperty(element, 'naturalWidth', { value: width });
+  Object.defineProperty(element, 'naturalHeight', { value: height });
+  return element;
+}
+
+async function uploadImage(
+  user: UserEvent,
+  name = 'beach.png',
+  type = 'image/png',
+): Promise<void> {
+  const file = new File(['x'], name, { type });
+  await user.upload(screen.getByLabelText('Browse files'), file);
+}
+
+/** Waits out the quick frame and the settle timer inside `act`. */
+async function settle(): Promise<void> {
+  await act(async () => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
+  });
+  await act(async () => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, IDLE_DELAY_MS + 20);
+    });
+  });
+}
+
+describe('App', () => {
+  beforeEach(() => {
+    vi.mocked(loadImage).mockResolvedValue(fakeImage());
+    vi.mocked(imageToImageData).mockImplementation(() => new ImageData(8, 6));
+    vi.mocked(encodeImage).mockResolvedValue(
+      new Blob(['x'], { type: 'image/png' }),
+    );
   });
 
-  it('button click increments count', async () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders the hero dropzone with no image', () => {
+    render(<App />);
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Watercolor' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Drop an image, paste from the clipboard/i),
+    ).toBeInTheDocument();
+  });
+
+  it('uploads an image into the editor', async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    const button = screen.getByRole('button', { name: /count is 0/i });
+    await uploadImage(user);
 
-    await user.click(button);
-    expect(button).toHaveTextContent('count is 1');
+    expect(await screen.findByText('Painting…')).toBeInTheDocument();
+    await settle();
+    expect(screen.queryByText('Painting…')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('slider')).toHaveLength(PARAM_META.length + 1);
+    expect(screen.getByRole('button', { name: 'Sketch' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Remove image' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: 'Original beach.png' }),
+    ).toBeInTheDocument();
+  });
 
-    await user.click(button);
-    expect(button).toHaveTextContent('count is 2');
+  it('shows an error for unsupported dropped files', () => {
+    render(<App />);
+    const zone = screen
+      .getByText(/Drop an image, paste from the clipboard/i)
+      .closest('div') as HTMLElement;
+    const pdf = new File(['x'], 'notes.pdf', { type: 'application/pdf' });
+
+    fireEvent.drop(zone, { dataTransfer: { files: [pdf] } });
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Unsupported file type: application/pdf',
+    );
+    expect(
+      screen.getByText(/Drop an image, paste from the clipboard/i),
+    ).toBeInTheDocument();
+  });
+
+  it('applies a preset to the controls', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await uploadImage(user);
+    await settle();
+
+    await user.click(screen.getByRole('button', { name: 'Sketch' }));
+
+    expect(screen.getByRole('button', { name: 'Sketch' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByLabelText('Saturation')).toHaveValue(
+      String(getPreset('sketch').params.saturation),
+    );
+  });
+
+  it('clears the active preset when a slider moves', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await uploadImage(user);
+    await settle();
+    await user.click(screen.getByRole('button', { name: 'Sketch' }));
+
+    const customBlur =
+      ['0', '0.5', '0.9'].find((value) =>
+        PRESETS.every((preset) => String(preset.params.blur) !== value),
+      ) ?? '0.5';
+    fireEvent.change(screen.getByLabelText('Blur'), {
+      target: { value: customBlur },
+    });
+
+    expect(screen.getByRole('button', { name: 'Sketch' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(screen.getByRole('button', { name: 'Loose' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+  });
+
+  it('downloads with a source-derived filename', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await uploadImage(user);
+    await settle();
+
+    await user.click(screen.getByRole('button', { name: 'Download' }));
+
+    await waitFor(() => {
+      expect(downloadBlob).toHaveBeenCalledWith(
+        expect.any(Blob),
+        'beach-watercolor.png',
+      );
+    });
+  });
+
+  it('follows the chosen output format', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await uploadImage(user, 'shot.jpg', 'image/jpeg');
+    await settle();
+    expect(screen.getByLabelText('Format')).toHaveValue('image/jpeg');
+
+    fireEvent.change(screen.getByLabelText('Format'), {
+      target: { value: 'image/webp' },
+    });
+    await user.click(screen.getByRole('button', { name: 'Download' }));
+
+    await waitFor(() => {
+      expect(downloadBlob).toHaveBeenCalledWith(
+        expect.any(Blob),
+        'shot-watercolor.webp',
+      );
+    });
+  });
+
+  it('warns when the image exceeds the render budget', async () => {
+    const user = userEvent.setup();
+    vi.mocked(loadImage).mockResolvedValue(fakeImage(5000, 4801));
+    render(<App />);
+
+    await uploadImage(user);
+
+    expect(await screen.findByText(/capped at 24 megapixels/i)).toBeVisible();
+  });
+
+  it('surfaces render failures in the status line', async () => {
+    const user = userEvent.setup();
+    vi.mocked(imageToImageData).mockImplementation(() => {
+      throw new Error('gpu meltdown');
+    });
+    render(<App />);
+
+    await uploadImage(user);
+
+    expect(await screen.findByText('gpu meltdown')).toBeInTheDocument();
+  });
+
+  it('returns to the dropzone when the image is removed', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await uploadImage(user);
+    await settle();
+
+    await user.click(screen.getByRole('button', { name: 'Remove image' }));
+
+    expect(
+      screen.getByText(/Drop an image, paste from the clipboard/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('img', { name: 'Original beach.png' }),
+    ).not.toBeInTheDocument();
   });
 });

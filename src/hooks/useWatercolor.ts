@@ -1,0 +1,86 @@
+import type { RefObject } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { imageToImageData } from 'src/services/canvas';
+import {
+  fullPassMaxDim,
+  WORKING_MAX_DIM,
+} from 'src/services/watercolor/geometry';
+import { createWatercolorRenderer } from 'src/services/watercolor/renderer';
+import type { WatercolorRenderer } from 'src/services/watercolor/renderer.types';
+import type { WatercolorParams } from 'src/types/watercolor';
+
+import type { SourceImage } from './useImageFile';
+
+export type RenderStatus = 'idle' | 'rendering' | 'error';
+
+/** Delay before the full-resolution pass runs after input settles. */
+export const IDLE_DELAY_MS = 150;
+
+export interface UseWatercolorResult {
+  canvasRef: RefObject<HTMLCanvasElement | null>;
+  status: RenderStatus;
+  error: string | null;
+}
+
+/** Extracts a display message from an unknown thrown value. */
+export function messageOf(cause: unknown, fallback: string): string {
+  return cause instanceof Error ? cause.message : fallback;
+}
+
+/**
+ * Drives rendering for the preview canvas. Each change renders a fast
+ * working-scale frame immediately, then a full-resolution frame once
+ * input settles.
+ */
+export function useWatercolor(
+  image: SourceImage | null,
+  params: WatercolorParams,
+): UseWatercolorResult {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rendererRef = useRef<WatercolorRenderer | null>(null);
+  const [status, setStatus] = useState<RenderStatus>('idle');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !image) {
+      return undefined;
+    }
+
+    const renderFrame = (maxDim?: number): boolean => {
+      try {
+        rendererRef.current ??= createWatercolorRenderer(canvas);
+        rendererRef.current.render(
+          imageToImageData(image.element, maxDim),
+          params,
+        );
+        return true;
+      } catch (cause) {
+        setStatus('error');
+        setError(messageOf(cause, 'Unable to render the image'));
+        return false;
+      }
+    };
+
+    setStatus('rendering');
+    const quick = setTimeout(() => {
+      renderFrame(WORKING_MAX_DIM);
+    }, 0);
+    const settle = setTimeout(() => {
+      const maxDim = fullPassMaxDim(image.width, image.height);
+      if (renderFrame(maxDim)) {
+        setStatus('idle');
+        setError(null);
+      }
+    }, IDLE_DELAY_MS);
+
+    return () => {
+      clearTimeout(quick);
+      clearTimeout(settle);
+      rendererRef.current?.dispose();
+      rendererRef.current = null;
+    };
+  }, [image, params]);
+
+  return { canvasRef, status, error };
+}
