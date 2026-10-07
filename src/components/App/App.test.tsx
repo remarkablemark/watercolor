@@ -92,7 +92,7 @@ describe('App', () => {
 
     expect(await screen.findByText('Painting…')).toBeInTheDocument();
     await settle();
-    expect(screen.getByText('Ready')).toBeInTheDocument();
+    expect(screen.queryByText('Painting…')).not.toBeInTheDocument();
     expect(screen.getAllByRole('slider')).toHaveLength(PARAM_META.length + 1);
     expect(screen.getByRole('button', { name: 'Sketch' })).toBeInTheDocument();
     expect(

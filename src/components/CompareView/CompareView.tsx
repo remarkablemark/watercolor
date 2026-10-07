@@ -7,6 +7,8 @@ interface CompareViewProps {
   width: number;
   height: number;
   alt: string;
+  /** Shows the paint spinner while a render is in flight. */
+  rendering?: boolean;
 }
 
 const STEP = 2;
@@ -22,6 +24,7 @@ export function CompareView({
   width,
   height,
   alt,
+  rendering = false,
 }: CompareViewProps) {
   const [divider, setDivider] = useState(50);
 
@@ -71,6 +74,15 @@ export function CompareView({
         className="absolute inset-0 h-full w-full"
         style={{ clipPath: `inset(0 ${String(100 - divider)}% 0 0)` }}
       />
+      {rendering && (
+        <div
+          role="status"
+          className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2"
+        >
+          <span className="block h-7 w-7 animate-spin rounded-full border-[3px] border-stone-300 border-t-stone-800 bg-white/80 dark:border-stone-600 dark:border-t-stone-200 dark:bg-stone-900/80" />
+          <span className="sr-only">Painting…</span>
+        </div>
+      )}
       <span className="pointer-events-none absolute top-2 left-2 rounded bg-black/50 px-1.5 py-0.5 text-sm text-white">
         Original
       </span>

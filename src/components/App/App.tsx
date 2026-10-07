@@ -31,8 +31,6 @@ export function App() {
   const formats = DOWNLOAD_FORMATS.filter(supportsEncoding);
   const oversized =
     image !== null && image.width * image.height > MAX_INPUT_PIXELS;
-  const statusText =
-    status === 'rendering' ? 'Painting…' : (renderError ?? 'Ready');
 
   const handleParams = (next: WatercolorParams): void => {
     setParams(next);
@@ -80,10 +78,11 @@ export function App() {
                 width={image.width}
                 height={image.height}
                 alt={`Original ${image.name}`}
+                rendering={status === 'rendering'}
               />
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-base text-stone-500 dark:text-stone-400">
-                  {statusText}
+                <p className="text-base text-red-700 dark:text-red-300">
+                  {renderError}
                 </p>
                 <Dropzone variant="button" onFile={loadFile} />
               </div>

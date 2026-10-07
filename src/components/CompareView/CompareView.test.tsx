@@ -24,7 +24,7 @@ function mockRect(width: number, left = 0): void {
   });
 }
 
-function renderView() {
+function renderView(rendering = false) {
   return render(
     <CompareView
       originalUrl="blob:original"
@@ -32,6 +32,7 @@ function renderView() {
       width={8}
       height={6}
       alt="Original photo.png"
+      rendering={rendering}
     />,
   );
 }
@@ -53,6 +54,18 @@ describe('CompareView', () => {
     expect(screen.getByText('Watercolor')).toBeInTheDocument();
     expect(frame().querySelector('canvas')).toBeInTheDocument();
     expect(frame().style.aspectRatio).toBe('8 / 6');
+  });
+
+  it('shows a spinner over the frame while rendering', () => {
+    renderView(true);
+
+    expect(screen.getByRole('status')).toHaveTextContent('Painting…');
+  });
+
+  it('hides the spinner once idle', () => {
+    renderView();
+
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
   it('jumps to the pointer position on press and drags while held', () => {
