@@ -5,12 +5,9 @@ import {
   fullPassMaxDim,
   WORKING_MAX_DIM,
 } from 'src/services/watercolor/geometry';
-import {
-  createWatercolorRenderer,
-  probeWebgl,
-} from 'src/services/watercolor/renderer';
+import { createWatercolorRenderer } from 'src/services/watercolor/renderer';
 import type { WatercolorRenderer } from 'src/services/watercolor/renderer.types';
-import type { RenderBackend, WatercolorParams } from 'src/types/watercolor';
+import type { WatercolorParams } from 'src/types/watercolor';
 
 import type { SourceImage } from './useImageFile';
 
@@ -22,7 +19,6 @@ export const IDLE_DELAY_MS = 150;
 export interface UseWatercolorResult {
   canvasRef: RefObject<HTMLCanvasElement | null>;
   status: RenderStatus;
-  backend: RenderBackend | null;
   error: string | null;
 }
 
@@ -34,7 +30,7 @@ export function messageOf(cause: unknown, fallback: string): string {
 /**
  * Drives rendering for the preview canvas. Each change renders a fast
  * working-scale frame immediately, then a full-resolution frame once
- * input settles. Prefers the GPU and falls back to the CPU pipeline.
+ * input settles.
  */
 export function useWatercolor(
   image: SourceImage | null,
@@ -43,7 +39,6 @@ export function useWatercolor(
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rendererRef = useRef<WatercolorRenderer | null>(null);
   const [status, setStatus] = useState<RenderStatus>('idle');
-  const [backend, setBackend] = useState<RenderBackend | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -51,40 +46,14 @@ export function useWatercolor(
     if (!canvas || !image) {
       return undefined;
     }
-    const probe = probeWebgl();
-    const fitsGpu =
-      probe.supported &&
-      image.width <= probe.maxTextureSize &&
-      image.height <= probe.maxTextureSize;
-    try {
-      const renderer = createWatercolorRenderer(canvas, {
-        prefer: fitsGpu ? 'auto' : 'canvas2d',
-      });
-      rendererRef.current = renderer;
-      setBackend(renderer.backend);
-    } catch (cause) {
-      setStatus('error');
-      setError(messageOf(cause, 'Unable to start a renderer'));
-    }
-    return () => {
-      rendererRef.current?.dispose();
-      rendererRef.current = null;
-    };
-  }, [image]);
-
-  useEffect(() => {
-    if (!image) {
-      return undefined;
-    }
-    const renderer = rendererRef.current;
-    if (!renderer) {
-      // Renderer creation failed; the error status is already set.
-      return undefined;
-    }
 
     const renderFrame = (maxDim?: number): boolean => {
       try {
-        renderer.render(imageToImageData(image.element, maxDim), params);
+        rendererRef.current ??= createWatercolorRenderer(canvas);
+        rendererRef.current.render(
+          imageToImageData(image.element, maxDim),
+          params,
+        );
         return true;
       } catch (cause) {
         setStatus('error');
@@ -108,8 +77,10 @@ export function useWatercolor(
     return () => {
       clearTimeout(quick);
       clearTimeout(settle);
+      rendererRef.current?.dispose();
+      rendererRef.current = null;
     };
   }, [image, params]);
 
-  return { canvasRef, status, backend, error };
+  return { canvasRef, status, error };
 }

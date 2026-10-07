@@ -14,16 +14,7 @@ import {
 import { MAX_INPUT_PIXELS } from 'src/services/watercolor/geometry';
 import { DEFAULT_PARAMS } from 'src/services/watercolor/params';
 import { getPreset, matchPreset } from 'src/services/watercolor/presets';
-import type {
-  PresetId,
-  RenderBackend,
-  WatercolorParams,
-} from 'src/types/watercolor';
-
-const BACKEND_LABELS: Record<RenderBackend, string> = {
-  webgl: 'GPU',
-  canvas2d: 'CPU',
-};
+import type { PresetId, WatercolorParams } from 'src/types/watercolor';
 
 export function App() {
   const { image, error: imageError, loading, loadFile, clear } = useImageFile();
@@ -34,7 +25,6 @@ export function App() {
   const {
     canvasRef,
     status,
-    backend,
     error: renderError,
   } = useWatercolor(image, params);
 
@@ -66,11 +56,6 @@ export function App() {
               Turn any photo into a painting — nothing leaves your browser.
             </p>
           </div>
-          {backend && (
-            <span className="rounded-full border border-stone-300 px-2 py-0.5 text-xs font-medium text-stone-600 dark:border-stone-700 dark:text-stone-300">
-              {BACKEND_LABELS[backend]}
-            </span>
-          )}
         </div>
       </header>
 

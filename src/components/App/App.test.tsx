@@ -80,7 +80,6 @@ describe('App', () => {
       screen.getByRole('heading', { level: 1, name: 'Watercolor Studio' }),
     ).toBeInTheDocument();
     expect(screen.getByText(/Drop an image here/i)).toBeInTheDocument();
-    expect(screen.queryByText('CPU')).not.toBeInTheDocument();
   });
 
   it('uploads an image into the editor', async () => {
@@ -92,7 +91,6 @@ describe('App', () => {
     expect(await screen.findByText('Painting…')).toBeInTheDocument();
     await settle();
     expect(screen.getByText('Ready')).toBeInTheDocument();
-    expect(screen.getByText('CPU')).toBeInTheDocument();
     expect(screen.getAllByRole('slider')).toHaveLength(PARAM_META.length + 1);
     expect(screen.getByRole('button', { name: 'Sketch' })).toBeInTheDocument();
     expect(

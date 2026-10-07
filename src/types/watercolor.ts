@@ -23,9 +23,6 @@ export type PresetId = 'loose' | 'wet' | 'sketch' | 'posterized';
 /** Mimes that canvas can encode and the app can download. */
 export type DownloadFormat = 'image/png' | 'image/jpeg' | 'image/webp';
 
-/** Rendering backend selected at runtime. */
-export type RenderBackend = 'webgl' | 'canvas2d';
-
 /** UI metadata describing a single slider. */
 export interface ParamMeta {
   key: keyof WatercolorParams;

@@ -2,7 +2,6 @@ import { act, renderHook } from '@testing-library/react';
 import { imageToImageData } from 'src/services/canvas';
 import { WORKING_MAX_DIM } from 'src/services/watercolor/geometry';
 import { DEFAULT_PARAMS } from 'src/services/watercolor/params';
-import { probeWebgl } from 'src/services/watercolor/renderer';
 import type { WatercolorParams } from 'src/types/watercolor';
 
 import type { SourceImage } from './useImageFile';
@@ -11,12 +10,6 @@ import { IDLE_DELAY_MS, messageOf, useWatercolor } from './useWatercolor';
 vi.mock('src/services/canvas', async (importOriginal) => {
   const actual = await importOriginal<typeof import('src/services/canvas')>();
   return { ...actual, imageToImageData: vi.fn(actual.imageToImageData) };
-});
-
-vi.mock('src/services/watercolor/renderer', async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import('src/services/watercolor/renderer')>();
-  return { ...actual, probeWebgl: vi.fn(actual.probeWebgl) };
 });
 
 function makeImage(width = 8, height = 6): SourceImage {
@@ -71,8 +64,7 @@ function renderWithCanvas(initialProps: HookProps) {
   return { result, rerender, canvas, context };
 }
 
-function setup(probe: { supported: boolean; maxTextureSize: number }) {
-  vi.mocked(probeWebgl).mockReturnValue(probe);
+function setup() {
   const hooks = renderWithCanvas({ image: null, params: DEFAULT_PARAMS });
   const image = makeImage();
   hooks.rerender({ image, params: DEFAULT_PARAMS });
@@ -96,24 +88,18 @@ describe('useWatercolor', () => {
       'src/services/canvas',
     );
     vi.mocked(imageToImageData).mockImplementation(canvas.imageToImageData);
-    const renderer = await vi.importActual<
-      typeof import('src/services/watercolor/renderer')
-    >('src/services/watercolor/renderer');
-    vi.mocked(probeWebgl).mockImplementation(renderer.probeWebgl);
     document.body.innerHTML = '';
   });
 
   it('stays idle without an image', () => {
     const { result } = renderHook(() => useWatercolor(null, DEFAULT_PARAMS));
     expect(result.current.status).toBe('idle');
-    expect(result.current.backend).toBeNull();
     expect(result.current.error).toBeNull();
   });
 
   it('renders a fast frame, then a full-resolution frame', async () => {
-    const { result, context } = setup({ supported: false, maxTextureSize: 0 });
+    const { result, context } = setup();
 
-    expect(result.current.backend).toBe('canvas2d');
     expect(result.current.status).toBe('rendering');
 
     await settle();
@@ -126,10 +112,7 @@ describe('useWatercolor', () => {
   });
 
   it('renders again when parameters change', async () => {
-    const { result, rerender, image, context } = setup({
-      supported: false,
-      maxTextureSize: 0,
-    });
+    const { result, rerender, image, context } = setup();
     await settle();
     expect(context.putImageData).toHaveBeenCalledTimes(2);
 
@@ -141,27 +124,11 @@ describe('useWatercolor', () => {
     expect(result.current.status).toBe('idle');
   });
 
-  it('uses the gpu path when the probe says the image fits', async () => {
-    const { result } = setup({ supported: true, maxTextureSize: 4096 });
-
-    expect(result.current.status).toBe('rendering');
-    await settle();
-    expect(result.current.status).toBe('idle');
-  });
-
-  it('forces the cpu path when the image exceeds the texture limit', async () => {
-    const { result } = setup({ supported: true, maxTextureSize: 4 });
-
-    expect(result.current.backend).toBe('canvas2d');
-    await settle();
-    expect(result.current.status).toBe('idle');
-  });
-
   it('reports an error when rendering throws', async () => {
     vi.mocked(imageToImageData).mockImplementation(() => {
       throw new Error('boom');
     });
-    const { result } = setup({ supported: false, maxTextureSize: 0 });
+    const { result } = setup();
 
     await settle();
 
@@ -169,11 +136,7 @@ describe('useWatercolor', () => {
     expect(result.current.error).toBe('boom');
   });
 
-  it('reports an error when no context can be created', () => {
-    vi.mocked(probeWebgl).mockReturnValue({
-      supported: false,
-      maxTextureSize: 0,
-    });
+  it('reports an error when no context can be created', async () => {
     const { result, rerender, canvas } = renderWithCanvas({
       image: null,
       params: DEFAULT_PARAMS,
@@ -181,9 +144,9 @@ describe('useWatercolor', () => {
     vi.spyOn(canvas, 'getContext').mockReturnValue(null);
 
     rerender({ image: makeImage(), params: DEFAULT_PARAMS });
+    await settle();
 
     expect(result.current.status).toBe('error');
     expect(result.current.error).toBe('Canvas 2D context is unavailable');
-    expect(result.current.backend).toBeNull();
   });
 });
