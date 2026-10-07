@@ -2,7 +2,7 @@
 
 [![build](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/build.yml/badge.svg)](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/build.yml)
 [![test](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/test.yml/badge.svg)](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/remarkablemark/vite-react-tailwind-template/graph/badge.svg?token=DEr2eVeqdz)](https://codecov.io/gh/remarkablemark/vite-react-tailwind-template)
+[![codecov](https://codecov.io/gh/remarkablemark/watercolor/graph/badge.svg?token=Fnhl2pBxpd)](https://codecov.io/gh/remarkablemark/watercolor)
 
 ⚡ Vite React Tailwind Template
 
