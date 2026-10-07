@@ -1,7 +1,7 @@
-# vite-react-tailwind-template
+# Watercolor
 
-[![build](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/build.yml/badge.svg)](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/build.yml)
-[![test](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/test.yml/badge.svg)](https://github.com/remarkablemark/vite-react-tailwind-template/actions/workflows/test.yml)
+[![build](https://github.com/remarkablemark/watercolor/actions/workflows/build.yml/badge.svg)](https://github.com/remarkablemark/watercolor/actions/workflows/build.yml)
+[![test](https://github.com/remarkablemark/watercolor/actions/workflows/test.yml/badge.svg)](https://github.com/remarkablemark/watercolor/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/remarkablemark/watercolor/graph/badge.svg?token=Fnhl2pBxpd)](https://codecov.io/gh/remarkablemark/watercolor)
 
 🎨 Turn your images into watercolor art.
@@ -15,8 +15,8 @@ Upload an image, adjust the paint and paper effects, and download your watercolo
 Clone the repository:
 
 ```sh
-git clone https://github.com/remarkablemark/vite-react-tailwind-template.git
-cd vite-react-tailwind-template
+git clone https://github.com/remarkablemark/watercolor.git
+cd watercolor
 ```
 
 Install the dependencies:
