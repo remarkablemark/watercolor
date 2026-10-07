@@ -88,7 +88,10 @@ export function CompareView({
         style={{ left: `${String(divider)}%` }}
         className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize rounded-full border border-stone-900/20 bg-white p-2 shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
       >
-        <span aria-hidden="true" className="block h-4 w-4 text-stone-700">
+        <span
+          aria-hidden="true"
+          className="block h-4 w-4 leading-none text-stone-700"
+        >
           ↔
         </span>
       </div>
