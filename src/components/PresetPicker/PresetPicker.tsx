@@ -27,8 +27,8 @@ export function PresetPicker({ activeId, onSelect }: PresetPickerProps) {
               }}
               className={
                 active
-                  ? 'rounded-md bg-sky-600 px-3 py-2 text-base font-medium text-white'
-                  : 'rounded-md border border-stone-300 px-3 py-2 text-base font-medium hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800'
+                  ? 'cursor-pointer rounded-md bg-sky-600 px-3 py-2 text-base font-medium text-white'
+                  : 'cursor-pointer rounded-md border border-stone-300 px-3 py-2 text-base font-medium hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800'
               }
             >
               {preset.label}

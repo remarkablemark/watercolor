@@ -86,7 +86,7 @@ export function DownloadBar({
           void handleDownload();
         }}
         disabled={disabled || busy}
-        className="rounded-md bg-sky-600 px-4 py-2 text-base font-medium text-white hover:bg-sky-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:pointer-events-none disabled:opacity-50"
+        className="cursor-pointer rounded-md bg-sky-600 px-4 py-2 text-base font-medium text-white hover:bg-sky-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:pointer-events-none disabled:opacity-50"
       >
         {busy ? 'Preparing…' : 'Download'}
       </button>
