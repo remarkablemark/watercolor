@@ -107,7 +107,7 @@ export function App() {
                 <button
                   type="button"
                   onClick={clear}
-                  className="text-sm text-stone-500 underline-offset-2 hover:underline dark:text-stone-400"
+                  className="cursor-pointer text-sm text-stone-500 underline-offset-2 hover:underline dark:text-stone-400"
                 >
                   Remove image
                 </button>
