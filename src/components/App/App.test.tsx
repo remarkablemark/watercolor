@@ -71,6 +71,7 @@ describe('App', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   it('renders the hero dropzone with no image', () => {
@@ -85,13 +86,24 @@ describe('App', () => {
   });
 
   it('uploads an image into the editor', async () => {
-    const user = userEvent.setup();
+    // Fake timers hold the settle window open so the spinner is observable
+    // without racing the real 150ms render timer under a loaded machine.
+    vi.useFakeTimers();
     render(<App />);
+    const zone = screen
+      .getByText(/Drop an image, paste from the clipboard/i)
+      .closest('div') as HTMLElement;
+    const file = new File(['x'], 'beach.png', { type: 'image/png' });
 
-    await uploadImage(user);
+    fireEvent.drop(zone, { dataTransfer: { files: [file] } });
+    await act(async () => {
+      await Promise.resolve();
+    });
 
-    expect(await screen.findByText('Painting…')).toBeInTheDocument();
-    await settle();
+    expect(screen.getByText('Painting…')).toBeInTheDocument();
+    act(() => {
+      vi.advanceTimersByTime(IDLE_DELAY_MS);
+    });
     expect(screen.queryByText('Painting…')).not.toBeInTheDocument();
     expect(screen.getAllByRole('slider')).toHaveLength(PARAM_META.length + 1);
     expect(screen.getByRole('button', { name: 'Sketch' })).toBeInTheDocument();
