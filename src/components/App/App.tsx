@@ -51,7 +51,7 @@ export function App() {
               Watercolor
             </h1>
             <p className="text-base text-stone-500 dark:text-stone-400">
-              Turn any image into watercolor art
+              Turn any image into a watercolor painting
             </p>
           </div>
         </div>

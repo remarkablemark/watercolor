@@ -4,7 +4,7 @@
 [![test](https://github.com/remarkablemark/watercolor/actions/workflows/test.yml/badge.svg)](https://github.com/remarkablemark/watercolor/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/remarkablemark/watercolor/graph/badge.svg?token=Fnhl2pBxpd)](https://codecov.io/gh/remarkablemark/watercolor)
 
-🎨 Turn any image into watercolor art. Upload an image, adjust the effects, and download your watercolor creation:
+🎨 Turn any image into a watercolor painting. Upload an image, adjust the effects, and download your watercolor creation:
 
 - [Watercolor](https://remarkablemark.org/watercolor/)
 
