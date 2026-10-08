@@ -4,11 +4,19 @@
 [![test](https://github.com/remarkablemark/watercolor/actions/workflows/test.yml/badge.svg)](https://github.com/remarkablemark/watercolor/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/remarkablemark/watercolor/graph/badge.svg?token=Fnhl2pBxpd)](https://codecov.io/gh/remarkablemark/watercolor)
 
-🎨 Turn any image into watercolor art.
-
-Upload an image, adjust the effects, and download your watercolor creation:
+🎨 Turn any image into watercolor art. Upload an image, adjust the effects, and download your watercolor creation:
 
 - [Watercolor](https://remarkablemark.org/watercolor/)
+
+## Features
+
+- **Upload** an image with the file picker, drag-and-drop, or a clipboard paste.
+- **Presets**: Loose, Wet-on-wet, Sketch, and Posterized.
+- **Controls**: blur, saturation, quantize step, and paper texture. The preview updates live, then sharpens to full resolution when you stop.
+- **Preview** the before/after image. Drag the slider or focus it and use the arrow keys.
+- **Download** as PNG, JPEG, or WebP.
+- **Large images** are handled at a reduced scale first, with the full render capped at 24 megapixels.
+- **Private** and local: everything runs client-side in the browser and nothing is uploaded to a server.
 
 ## Install
 
