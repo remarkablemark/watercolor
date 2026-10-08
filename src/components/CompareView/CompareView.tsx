@@ -77,9 +77,9 @@ export function CompareView({
       {rendering && (
         <div
           role="status"
-          className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2"
+          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         >
-          <span className="block h-7 w-7 animate-spin rounded-full border-[3px] border-stone-300 border-t-stone-800 bg-white/80 dark:border-stone-600 dark:border-t-stone-200 dark:bg-stone-900/80" />
+          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-stone-300 border-t-stone-800 dark:border-stone-600 dark:border-t-stone-200" />
           <span className="sr-only">Painting…</span>
         </div>
       )}
