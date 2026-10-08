@@ -71,7 +71,7 @@ export function Dropzone({
     >
       {hero && (
         <p className="max-w-sm text-base text-stone-500 dark:text-stone-400">
-          Drop an image, paste from the clipboard, or browse.
+          Drop an image, paste from the clipboard, or browse
         </p>
       )}
       <input
